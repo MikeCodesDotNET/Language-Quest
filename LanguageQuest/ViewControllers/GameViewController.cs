@@ -47,9 +47,9 @@ namespace LanguageQuest
         {
             base.ViewDidAppear(animated);
 
+            lblSyncing.Alpha = 0;
+            spinner.Alpha = 0;
             lblWord.FadeIn(1, 1);
-            lblSyncing.FadeOut(1, 0.5f);
-            spinner.FadeOut(1, 0.5f);
         }
 
         partial void BtnSnapPhoto_TouchUpInside(UIButton sender)
