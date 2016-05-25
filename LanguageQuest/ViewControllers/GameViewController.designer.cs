@@ -24,7 +24,15 @@ namespace LanguageQuest
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel lblSyncing { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UILabel lblWord { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIActivityIndicatorView spinner { get; set; }
 
         [Action ("BtnSnapPhoto_TouchUpInside:")]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -46,9 +54,19 @@ namespace LanguageQuest
                 btnSnapPhoto = null;
             }
 
+            if (lblSyncing != null) {
+                lblSyncing.Dispose ();
+                lblSyncing = null;
+            }
+
             if (lblWord != null) {
                 lblWord.Dispose ();
                 lblWord = null;
+            }
+
+            if (spinner != null) {
+                spinner.Dispose ();
+                spinner = null;
             }
         }
     }

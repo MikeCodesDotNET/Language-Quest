@@ -15,7 +15,9 @@ namespace LanguageQuest
     public partial class GameViewController : UIViewController
     {
         CognitiveService cognitiveServices = new CognitiveService();
-        List<LanguageQuest.Models.Word> Words = new List<LanguageQuest.Models.Word>();
+        EasyTablesService easyTableService = new EasyTablesService();
+
+        List<Models.Word> words = new List<Models.Word>();
 
         public GameViewController (IntPtr handle) : base (handle)
         {
@@ -25,36 +27,20 @@ namespace LanguageQuest
         {
             base.ViewDidLoad();
 
-            lblWord.Text = "Koffie";
             lblWord.Alpha = 0;
+            lblSyncing.Alpha = 1;
+            spinner.Alpha = 1;
 
-            var coffie = new LanguageQuest.Models.Word { English = "Coffee", Translation = "Koffie" };
-            var cat = new LanguageQuest.Models.Word { English = "Cat", Translation = "Kat" };
+            var result = await easyTableService.GetWords();
+            words = result.ToList();
 
-            Words.Add(coffie);
-            Words.Add(cat);
-        }
+            lblWord.Text = words.FirstOrDefault().Dutch;
 
-        async void ImagePicker_FinishedPickingImage(object sender, UIImagePickerImagePickedEventArgs e)
-        {
-            var image = e.Image;
+            var coffie = new Models.Word { English = "Coffee", Dutch = "Koffie" };
+            var cat = new Models.Word { English = "Cat", Dutch = "Kat" };
 
-            var maxResizeFactor = Math.Min(400 / image.Size.Width, 400 / image.Size.Height);
-            var width = maxResizeFactor * image.Size.Width;
-            var height = maxResizeFactor * image.Size.Height;
-            image.Scale(new CoreGraphics.CGSize(width, height));
-            var stream = image.AsPNG().AsStream();
-
-            try
-            {
-                Acr.UserDialogs.UserDialogs.Instance.ShowLoading("Analyzing Image");
-                var result = await cognitiveServices.GetImageDescription(stream);
-                Acr.UserDialogs.UserDialogs.Instance.HideLoading();
-            }
-            catch (Exception ex)
-            {
-                Acr.UserDialogs.UserDialogs.Instance.ShowError(ex.Message);
-            }
+            words.Add(coffie);
+            words.Add(cat);
         }
 
         public override void ViewDidAppear(bool animated)
@@ -62,9 +48,11 @@ namespace LanguageQuest
             base.ViewDidAppear(animated);
 
             lblWord.FadeIn(1, 1);
+            lblSyncing.FadeOut(1, 0.5f);
+            spinner.FadeOut(1, 0.5f);
         }
 
-        async partial void BtnSnapPhoto_TouchUpInside(UIButton sender)
+        partial void BtnSnapPhoto_TouchUpInside(UIButton sender)
         {
             var imagePicker = new UIImagePickerController();
             imagePicker.SourceType = UIImagePickerControllerSourceType.Camera;
@@ -103,16 +91,15 @@ namespace LanguageQuest
 
         void ValidateVisionResponse(AnalysisResult result)
         {
-            var selectedWord = Words.FirstOrDefault();
+            var selectedWord = words.FirstOrDefault();
             foreach (var tag in result.Description.Tags)
             {
-                Console.WriteLine(tag);
                 if (tag == selectedWord.English.ToLower())
                 {
                     Acr.UserDialogs.UserDialogs.Instance.ShowSuccess("Correct!");
-                    Words.Remove(selectedWord);
-                    if (Words.Count > 0)
-                        lblWord.Text = Words.FirstOrDefault().Translation;
+                    words.Remove(selectedWord);
+                    if (words.Count > 0)
+                        lblWord.Text = words.FirstOrDefault().Dutch;
                     else
                     {
                         lblWord.Text = "Game Over";
@@ -123,7 +110,7 @@ namespace LanguageQuest
                 }
             }
 
-            Acr.UserDialogs.UserDialogs.Instance.ShowError($"Could not find {selectedWord.Translation}");
+            Acr.UserDialogs.UserDialogs.Instance.ShowError($"Could not find {selectedWord.Dutch}");
         }
 
         UIImage ScaledImage(UIImage image, nfloat maxWidth, nfloat maxHeight)

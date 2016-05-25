@@ -23,7 +23,7 @@ namespace LanguageQuest.Services
             if (isInitialized)
                 return;
 
-            MobileService = new MobileServiceClient(Helpers.Keys.AzureAppServiceKey, null)
+             MobileService = new MobileServiceClient(Helpers.Keys.AzureAppServiceKey, null)
             {
                 SerializerSettings = new MobileServiceJsonSerializerSettings()
                 {
@@ -31,7 +31,7 @@ namespace LanguageQuest.Services
                 }
             };
 
-            var store = new MobileServiceSQLiteStore("words.db");
+            var store = new MobileServiceSQLiteStore("word.db");
             store.DefineTable<Word>();
 
             await MobileService.SyncContext.InitializeAsync(store, new MobileServiceSyncHandler());
@@ -53,14 +53,14 @@ namespace LanguageQuest.Services
 
         public async Task SyncWords()
         {
-            var connected = await CrossConnectivity.Current.IsReachable(Helpers.Keys.AzureAppServiceKey);
+            var connected = await CrossConnectivity.Current.IsReachable("google.com");
             if (connected == false)
                 return;
 
             try
             {
                 await MobileService.SyncContext.PushAsync();
-                await wordTable.PullAsync("allHeadlineItems", wordTable.CreateQuery());
+                await wordTable.PullAsync("allWords", wordTable.CreateQuery());
             }
             catch (Exception ex)
             {

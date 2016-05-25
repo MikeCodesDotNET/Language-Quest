@@ -1,10 +1,11 @@
 ﻿using System;
 namespace LanguageQuest.Models
 {
-    public class Word
+    public class Word : EntityData
     {
         public string English { get; set;}
-        public string Translation { get; set;}
+
+        public string Dutch { get; set;}
     }
 }
 

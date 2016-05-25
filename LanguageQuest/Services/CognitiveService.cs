@@ -11,10 +11,6 @@ namespace LanguageQuest.Services
     {
         VisionServiceClient visionClient = new VisionServiceClient(Helpers.Keys.CognitiveServiceKey);
 
-        public CognitiveService()
-        {
-        }
-
         public async Task<AnalysisResult> GetImageDescription(Stream imageStream)
         {
             VisualFeature[] features = { VisualFeature.Tags, VisualFeature.Categories, VisualFeature.Description};
