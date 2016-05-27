@@ -86,7 +86,8 @@ namespace LanguageQuest
 
         partial void BtnSkip_TouchUpInside(UIButton sender)
         {
-            throw new NotImplementedException();
+            words.RemoveAt(0);
+            lblWord.Text = words.FirstOrDefault().Dutch;
         }
 
         void ValidateVisionResponse(AnalysisResult result)
