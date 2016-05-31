@@ -167,6 +167,10 @@
       <DependentUpon>GameViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\EntityData.cs" />
+    <Compile Include="ViewControllers\PraticeSpellingViewController.cs" />
+    <Compile Include="ViewControllers\PraticeSpellingViewController.designer.cs">
+      <DependentUpon>PraticeSpellingViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
