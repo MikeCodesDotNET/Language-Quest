@@ -34,6 +34,9 @@ namespace LanguageQuest
             var result = await easyTableService.GetWords();
             words = result.ToList();
 
+            if (words.Count == 0)
+                return;
+
             lblWord.Text = words.FirstOrDefault().Dutch;
 
             var coffie = new Models.Word { English = "Coffee", Dutch = "Koffie" };
@@ -54,6 +57,9 @@ namespace LanguageQuest
 
         partial void BtnSnapPhoto_TouchUpInside(UIButton sender)
         {
+            if(UIImagePickerController.IsCameraDeviceAvailable(UIImagePickerControllerCameraDevice.Rear) == false)
+                return;
+                
             var imagePicker = new UIImagePickerController();
             imagePicker.SourceType = UIImagePickerControllerSourceType.Camera;
             PresentViewController(imagePicker, true, null);

@@ -193,5 +193,23 @@
             </objects>
             <point key="canvasLocation" x="52" y="834"/>
         </scene>
+        <scene sceneID="84">
+            <objects>
+                <viewController id="85" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="82"/>
+                        <viewControllerLayoutGuide type="bottom" id="83"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="86">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <subviews/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="87" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="690" y="836"/>
+        </scene>
     </scenes>
 </document>
