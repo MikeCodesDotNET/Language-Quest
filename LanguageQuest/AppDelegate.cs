@@ -1,4 +1,7 @@
 ﻿using Foundation;
+using HockeyApp;
+using LanguageQuest.Abstractions;
+using Microsoft.WindowsAzure.MobileServices;
 using UIKit;
 
 namespace LanguageQuest
@@ -8,7 +11,7 @@ namespace LanguageQuest
     [Register("AppDelegate")]
     public class AppDelegate : UIApplicationDelegate
     {
-        // class-level declarations
+        BITHockeyManager manager;
 
         public override UIWindow Window
         {
@@ -18,8 +21,18 @@ namespace LanguageQuest
 
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
-            Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
+            //Azure goodness 
+            CurrentPlatform.Init();
             SQLitePCL.CurrentPlatform.Init();
+
+            UIApplication.SharedApplication.ApplicationSupportsShakeToEdit = true;
+
+
+            manager = BITHockeyManager.SharedHockeyManager;
+            manager.Configure(Helpers.Keys.HockeyAppID);
+            manager.StartManager();
+
+            Helpers.ServiceLocator.Instance.Add<IAzureService, Services.EasyTablesService>();
 
             UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes
             {

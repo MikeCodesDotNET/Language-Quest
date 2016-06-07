@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using LanguageQuest.Services;
 using Microsoft.ProjectOxford.Vision.Contract;
 using System.Linq;
+using Plugin.Connectivity;
 
 using MikeCodesDotNET.iOS;
+using System.Threading.Tasks;
 
 namespace LanguageQuest
 {
@@ -27,6 +29,8 @@ namespace LanguageQuest
         {
             base.ViewDidLoad();
 
+            await IsConnected();
+
             lblWord.Alpha = 0;
             lblSyncing.Alpha = 1;
             spinner.Alpha = 1;
@@ -36,6 +40,7 @@ namespace LanguageQuest
 
             if (words.Count == 0)
                 return;
+       
 
             lblWord.Text = words.FirstOrDefault().Dutch;
 
@@ -44,6 +49,8 @@ namespace LanguageQuest
 
             words.Add(coffie);
             words.Add(cat);
+
+
         }
 
         public override void ViewDidAppear(bool animated)
@@ -57,8 +64,11 @@ namespace LanguageQuest
 
         partial void BtnSnapPhoto_TouchUpInside(UIButton sender)
         {
-            if(UIImagePickerController.IsCameraDeviceAvailable(UIImagePickerControllerCameraDevice.Rear) == false)
+            if (UIImagePickerController.IsCameraDeviceAvailable(UIImagePickerControllerCameraDevice.Rear) == false)
+            {
+                Acr.UserDialogs.UserDialogs.Instance.ShowError("Camera not available");
                 return;
+            }
                 
             var imagePicker = new UIImagePickerController();
             imagePicker.SourceType = UIImagePickerControllerSourceType.Camera;
@@ -126,6 +136,17 @@ namespace LanguageQuest
             var width = maxResizeFactor * image.Size.Width;
             var height = maxResizeFactor * image.Size.Height;
             return image.Scale(new CoreGraphics.CGSize(width, height));
+        }
+
+        async Task<bool> IsConnected()
+        {
+            var connected = await CrossConnectivity.Current.IsReachable("google.com");
+            if (connected == false)
+            {
+                var vc = Storyboard.InstantiateViewController("SadPandaViewController");
+                await PresentViewControllerAsync(vc, false);
+            }
+            return connected;
         }
     }
 }

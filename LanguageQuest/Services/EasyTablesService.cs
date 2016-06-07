@@ -9,21 +9,24 @@ using Microsoft.WindowsAzure.MobileServices.Sync;
 using Plugin.Connectivity;
 using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 using LanguageQuest.Models;
+using LanguageQuest.Abstractions;
 
 namespace LanguageQuest.Services
 {
-    public class EasyTablesService
+    public class EasyTablesService : IAzureService
     {
-        public MobileServiceClient MobileService { get; set; }
-        IMobileServiceSyncTable<Word> wordTable;
+        public IMobileServiceClient MobileClient { get; set; }
 
-        bool isInitialized;
+        IMobileServiceSyncTable<Word> wordTable;
+        IMobileServiceSyncTable<Category> categoryTable;
+
+        public bool IsInitialized { get; set; }
         public async Task Initialize()
         {
-            if (isInitialized)
+            if (IsInitialized)
                 return;
 
-             MobileService = new MobileServiceClient(Helpers.Keys.AzureAppServiceKey, null)
+            MobileClient = new MobileServiceClient(Helpers.Keys.AzureAppServiceKey, null)
             {
                 SerializerSettings = new MobileServiceJsonSerializerSettings()
                 {
@@ -31,14 +34,16 @@ namespace LanguageQuest.Services
                 }
             };
 
-            var store = new MobileServiceSQLiteStore("word.db");
+            var store = new MobileServiceSQLiteStore("languagequest.db");
             store.DefineTable<Word>();
+            store.DefineTable<Category>();
 
-            await MobileService.SyncContext.InitializeAsync(store, new MobileServiceSyncHandler());
+            await MobileClient.SyncContext.InitializeAsync(store, new MobileServiceSyncHandler());
 
-            wordTable = MobileService.GetSyncTable<Word>();
+            wordTable = MobileClient.GetSyncTable<Word>();
+            categoryTable = MobileClient.GetSyncTable<Category>();
 
-            isInitialized = true;
+            IsInitialized = true;
         }
 
         public async Task<bool> AddWord(Word headline)
@@ -47,11 +52,11 @@ namespace LanguageQuest.Services
 
             await wordTable.InsertAsync(headline);
             //Synchronize todos
-            await SyncWords();
+            await Sync();
             return true;
         }
 
-        public async Task SyncWords()
+        public async Task Sync()
         {
             var connected = await CrossConnectivity.Current.IsReachable("google.com");
             if (connected == false)
@@ -59,7 +64,7 @@ namespace LanguageQuest.Services
 
             try
             {
-                await MobileService.SyncContext.PushAsync();
+                await MobileClient.SyncContext.PushAsync();
                 await wordTable.PullAsync("allWords", wordTable.CreateQuery());
             }
             catch (Exception ex)
@@ -71,8 +76,15 @@ namespace LanguageQuest.Services
         public async Task<IEnumerable<Word>> GetWords()
         {
             await Initialize();
-            await SyncWords();
+            await Sync();
             return await wordTable.ToEnumerableAsync();
+        }
+
+        public async Task<IEnumerable<Category>> GetCategories()
+        {
+            await Initialize();
+            await Sync();
+            return await categoryTable.ToEnumerableAsync();
         }
     }
 }

@@ -6,6 +6,10 @@ namespace LanguageQuest.Models
         public string English { get; set;}
 
         public string Dutch { get; set;}
+
+        public Category Category { get; set;}
+
+        public string Photographable { get; set;}
     }
 }
 

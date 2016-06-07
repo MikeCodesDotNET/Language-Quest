@@ -5,7 +5,7 @@
 	<key>CFBundleName</key>
 	<string>LanguageQuest</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.mikejames.languagequest.languagequest</string>
+	<string>com.mikejames.languagequest</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
@@ -39,5 +39,10 @@
 	<false/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
