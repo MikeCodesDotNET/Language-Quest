@@ -30,6 +30,8 @@ namespace LanguageQuest
             if (motion == UIEventSubtype.MotionShake)
             {
                 var feedbackManager = BITHockeyManager.SharedHockeyManager.FeedbackManager;
+                feedbackManager.NavigationBarTintColor = UIColor.FromRGB(47, 135, 233);
+                this.NavigationController.NavigationBar.TintColor = UIColor.FromRGB(47, 135, 233);
                 feedbackManager.ShowFeedbackComposeView();
             }
             base.MotionEnded(motion, evt);

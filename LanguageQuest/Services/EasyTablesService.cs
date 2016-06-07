@@ -36,12 +36,12 @@ namespace LanguageQuest.Services
 
             var store = new MobileServiceSQLiteStore("languagequest.db");
             store.DefineTable<Word>();
-            store.DefineTable<Category>();
+            //store.DefineTable<Category>();
 
             await MobileClient.SyncContext.InitializeAsync(store, new MobileServiceSyncHandler());
 
             wordTable = MobileClient.GetSyncTable<Word>();
-            categoryTable = MobileClient.GetSyncTable<Category>();
+           // categoryTable = MobileClient.GetSyncTable<Category>();
 
             IsInitialized = true;
         }
